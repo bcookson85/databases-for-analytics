@@ -27,7 +27,10 @@
 Why were these data types selected?
 
 ### Answer
-_Write your explanation here._
+country.Population is stored as an INT because population represents a whole-number count of people. Integers are efficient for storage and computation and are well-suited for large numeric values without requiring decimal precision.
+country.LifeExpectancy is stored as DECIMAL(3,1) because life expectancy is measured in years with fractional values (for example, 76.4 years). Using a fixed-point decimal preserves precision for these values.
+Additionally, LifeExpectancy allows NULL values because data may be unavailable for some countries, whereas Population does not allow NULL since it is a required demographic attribute.
+
 
 ### Screenshot
 _Show the table structure or DESCRIBE output._
@@ -46,7 +49,9 @@ DESCRIBE country;
 Why do you think this data type was selected?
 
 ### Answer
-_Write your explanation here._
+The data type of country.IndepYear is SMALLINT.
+This data type was likely selected because independence years are represented as whole numbers and fall within a relatively small numeric range. A SMALLINT efficiently stores year values without using unnecessary storage space, unlike larger integer types. Additionally, the column allows NULL values, which makes sense because not all countries have a single, clearly defined year of independence. Using SMALLINT balances accuracy, storage efficiency, and flexibility for historical data.
+
 
 ### Screenshot
 
@@ -64,7 +69,9 @@ DESCRIBE country;
 Explain why your proposed data type might be better in some situations.
 
 ### Answer
-_Write your explanation here._
+An alternative data type for country.IndepYear could be YEAR instead of SMALLINT.
+Using the YEAR data type may be preferable in situations where the column is strictly intended to represent a calendar year and not a more general numeric value. The YEAR type enforces valid year formatting, which can help prevent invalid or unrealistic entries and improve data integrity. It also makes the column’s purpose immediately clear to anyone reading the schema, enhancing readability and maintainability. In databases where date-related functions or time-based comparisons are frequently used, storing independence years as a YEAR could simplify queries and reduce ambiguity.
+
 
 ---
 
