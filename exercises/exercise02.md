@@ -1,6 +1,6 @@
 # Exercise 02: World Database – Joins, Grouping, and Data Quality
 
-- Name:
+- Name: Brian Cookson
 - Course: Database for Analytics
 - Module: 2
 - Database Used: World Database (PostgreSQL)
@@ -23,13 +23,14 @@
 When importing records from `worldPGSQL.sql`, **how many cities were imported**?
 
 ### Answer
-_Write the number of cities imported._
+4079
 
 ### Screenshot
 _Show evidence of how you determined this (for example, a COUNT query)._
 
 ```sql
--- Your SQL here
+SELECT COUNT(*) AS city_count
+FROM city;
 ```
 
 ![Q1 Screenshot](screenshots/q1_city_count.png)
@@ -43,7 +44,12 @@ Using the World database, write the SQL command to **display each country name a
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT c.Name AS country_name,
+       cl.Language AS language
+FROM country c
+JOIN countrylanguage cl
+  ON c.Code = cl.CountryCode
+ORDER BY c.Name, cl.Language;
 ```
 
 ### Screenshot
@@ -59,7 +65,13 @@ Using the World database, write the SQL command to **display each country name a
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT c.Name AS country_name,
+       cl.Language AS language
+FROM country c
+JOIN countrylanguage cl
+  ON c.Code = cl.CountryCode
+WHERE cl.IsOfficial = 'T'
+ORDER BY c.Name, cl.Language;
 ```
 
 ### Screenshot
@@ -88,7 +100,7 @@ ON country.code = countrylanguage.countrycode;
 **In your own words**, describe what data the **second query returns that the first query does not**.
 
 ### Answer
-_Write your explanation here._
+The second query returns all countries, including those that do not have any matching records in the countrylanguage table. The first query only returns countries that have at least one associated language, because it behaves like an inner join.
 
 ---
 
@@ -100,7 +112,8 @@ Do **not** repeat any form of government more than once.
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT DISTINCT GovernmentForm
+FROM country;
 ```
 
 ### Screenshot
@@ -117,7 +130,15 @@ Label the column **"City or Country Name"**.
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT Name AS `City or Country Name`
+FROM city
+
+UNION
+
+SELECT Name AS `City or Country Name`
+FROM country
+
+ORDER BY `City or Country Name`;
 ```
 
 ### Screenshot
@@ -134,7 +155,14 @@ Be sure to **sort by country name**.
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT 
+    c.Name AS country_name,
+    COUNT(cl.Language) AS language_count
+FROM country c
+LEFT JOIN countrylanguage cl
+    ON c.Code = cl.CountryCode
+GROUP BY c.Name
+ORDER BY c.Name;
 ```
 
 ### Screenshot
@@ -151,7 +179,12 @@ Be sure to **sort by language name**.
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT 
+    cl.Language AS language,
+    COUNT(cl.CountryCode) AS country_count
+FROM countrylanguage cl
+GROUP BY cl.Language
+ORDER BY cl.Language;
 ```
 
 ### Screenshot
@@ -169,7 +202,15 @@ Using the World database, write the SQL command to **list countries that have mo
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT 
+    c.Name AS country_name,
+    COUNT(cl.Language) AS official_language_count
+FROM country c
+JOIN countrylanguage cl
+    ON c.Code = cl.CountryCode
+WHERE cl.IsOfficial = 'T'
+GROUP BY c.Name
+HAVING COUNT(cl.Language) > 2;
 ```
 
 ### Screenshot
@@ -187,7 +228,11 @@ Using the World database, write the SQL command to **find cities where the distr
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT Name, District
+FROM city
+WHERE District IS NULL
+   OR District = ''
+   OR District LIKE '-';
 ```
 
 ### Screenshot
@@ -205,7 +250,10 @@ Using the World database, write the SQL command to **calculate the percentage of
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT 
+    (COUNT(*) / (SELECT COUNT(*) FROM city)) * 100 AS missing_district_percentage
+FROM city
+WHERE District = '';
 ```
 
 ### Screenshot
