@@ -1,6 +1,6 @@
 # Exercise 03: MongoDB – Document Queries and Analysis
 
-- Name:
+- Name: Brian Cookson
 - Course: Database for Analytics
 - Module: 3
 - Database Used: MongoDB

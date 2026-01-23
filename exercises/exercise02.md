@@ -44,12 +44,13 @@ Using the World database, write the SQL command to **display each country name a
 ### SQL
 
 ```sql
-SELECT c.Name AS country_name,
-       cl.Language AS language
+SELECT
+    c.name AS country,
+    cl.language
 FROM country c
 JOIN countrylanguage cl
-  ON c.Code = cl.CountryCode
-ORDER BY c.Name, cl.Language;
+    ON c.code = cl.countrycode
+ORDER BY c.name, cl.language;
 ```
 
 ### Screenshot
@@ -112,8 +113,9 @@ Do **not** repeat any form of government more than once.
 ### SQL
 
 ```sql
-SELECT DISTINCT GovernmentForm
-FROM country;
+SELECT DISTINCT governmentform
+FROM country
+ORDER BY governmentform;
 ```
 
 ### Screenshot
@@ -130,15 +132,15 @@ Label the column **"City or Country Name"**.
 ### SQL
 
 ```sql
-SELECT Name AS `City or Country Name`
+SELECT name AS "City or Country Name"
 FROM city
 
 UNION
 
-SELECT Name AS `City or Country Name`
+SELECT name AS "City or Country Name"
 FROM country
 
-ORDER BY `City or Country Name`;
+ORDER BY "City or Country Name";
 ```
 
 ### Screenshot
@@ -155,14 +157,14 @@ Be sure to **sort by country name**.
 ### SQL
 
 ```sql
-SELECT 
-    c.Name AS country_name,
-    COUNT(cl.Language) AS language_count
+SELECT
+    c.name AS country,
+    COUNT(cl.language) AS language_count
 FROM country c
-LEFT JOIN countrylanguage cl
-    ON c.Code = cl.CountryCode
-GROUP BY c.Name
-ORDER BY c.Name;
+JOIN countrylanguage cl
+    ON c.code = cl.countrycode
+GROUP BY c.name
+ORDER BY c.name;
 ```
 
 ### Screenshot
@@ -179,12 +181,12 @@ Be sure to **sort by language name**.
 ### SQL
 
 ```sql
-SELECT 
-    cl.Language AS language,
-    COUNT(cl.CountryCode) AS country_count
+SELECT
+    cl.language,
+    COUNT(DISTINCT cl.countrycode) AS country_count
 FROM countrylanguage cl
-GROUP BY cl.Language
-ORDER BY cl.Language;
+GROUP BY cl.language
+ORDER BY cl.language;
 ```
 
 ### Screenshot
@@ -202,15 +204,16 @@ Using the World database, write the SQL command to **list countries that have mo
 ### SQL
 
 ```sql
-SELECT 
-    c.Name AS country_name,
-    COUNT(cl.Language) AS official_language_count
+SELECT
+    c.name AS country,
+    COUNT(cl.language) AS official_language_count
 FROM country c
 JOIN countrylanguage cl
-    ON c.Code = cl.CountryCode
-WHERE cl.IsOfficial = 'T'
-GROUP BY c.Name
-HAVING COUNT(cl.Language) > 2;
+    ON c.code = cl.countrycode
+WHERE cl.isofficial = 'T'
+GROUP BY c.name
+HAVING COUNT(cl.language) > 2
+ORDER BY c.name;
 ```
 
 ### Screenshot
@@ -228,11 +231,10 @@ Using the World database, write the SQL command to **find cities where the distr
 ### SQL
 
 ```sql
-SELECT Name, District
+SELECT name, district
 FROM city
-WHERE District IS NULL
-   OR District = ''
-   OR District LIKE '-';
+WHERE district IS NULL
+   OR district LIKE '-';
 ```
 
 ### Screenshot
@@ -250,10 +252,17 @@ Using the World database, write the SQL command to **calculate the percentage of
 ### SQL
 
 ```sql
-SELECT 
-    (COUNT(*) / (SELECT COUNT(*) FROM city)) * 100 AS missing_district_percentage
-FROM city
-WHERE District = '';
+SELECT
+  ROUND(
+    100.0 * SUM(
+      CASE
+        WHEN TRIM(district) ~ '^[\-\–\—\−]'
+        THEN 1 ELSE 0
+      END
+    ) / COUNT(*),
+    2
+  ) AS missing_district_percentage
+FROM city;
 ```
 
 ### Screenshot
