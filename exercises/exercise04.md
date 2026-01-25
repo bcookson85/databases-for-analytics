@@ -1,6 +1,6 @@
 # Exercise 04: Advanced SQL, Jupyter, and Visualization
 
-- Name:
+- Name: Brian Cookson
 - Course: Database for Analytics
 - Module:
 - Database Used: World Database

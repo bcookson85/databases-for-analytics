@@ -1,6 +1,6 @@
 # Exercise 05: SQLDA Database - Dates, Data Quality, Arrays, and JSON
 
-- Name:
+- Name: Brian Cookson
 - Course: Database for Analytics
 - Module:
 - Database Used:  `sqlda` (Sample Datasets)
