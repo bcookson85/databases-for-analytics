@@ -2,7 +2,7 @@
 
 - Name: Brian Cookson
 - Course: Database for Analytics
-- Module:
+- Module: 5
 - Database Used:  `sqlda` (Sample Datasets)
 - Tools Used: PostgreSQL (pgAdmin or psql)
 
@@ -42,7 +42,9 @@ year
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT DISTINCT EXTRACT(YEAR FROM sent_date) AS year
+FROM emails
+ORDER BY year;
 ```
 
 ### Screenshot
@@ -65,7 +67,12 @@ count   year
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT
+    COUNT(*) AS count,
+    EXTRACT(YEAR FROM sent_date) AS year
+FROM emails
+GROUP BY year
+ORDER BY year;
 ```
 
 ### Screenshot
@@ -86,7 +93,13 @@ Only include emails that contain **both** a sent date and an opened date.
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT
+    sent_date,
+    opened_date,
+    opened_date - sent_date AS interval
+FROM emails
+WHERE sent_date IS NOT NULL
+  AND opened_date IS NOT NULL;
 ```
 
 ### Screenshot
@@ -102,7 +115,13 @@ Using the `sqlda` database, write the SQL needed to show emails that contain an 
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT
+    sent_date,
+    opened_date
+FROM emails
+WHERE opened_date IS NOT NULL
+  AND sent_date IS NOT NULL
+  AND opened_date < sent_date;
 ```
 
 ### Screenshot
@@ -119,11 +138,7 @@ After looking at the data, **why is this the case?**
 
 ### Answer
 
-_Write your explanation here._
-
-### Screenshot (if requested by instructor)
-
-![Q5 Screenshot](screenshots/q5_explain_date_issue.png)
+_Time zone differences or inconsistent timestamp recording, where the sent timestamp is standardized, while the opened timestamp reflects local time, making it appear that the email was opened before it was sent._
 
 ---
 
@@ -160,7 +175,7 @@ CREATE TEMP TABLE customer_dealership_distance AS (
 
 ### Answer
 
-_Write your explanation here._
+_This code creates three temporary tables to calculate geographic distances between customers and dealerships. First, it creates a temporary table that converts each customer’s longitude and latitude into a PostgreSQL point data type, excluding any customers missing coordinate data. Next, it creates a similar temporary table for dealerships, also converting their longitude and latitude into points. Finally, it performs a CROSS JOIN between the customer and dealership point tables, pairing every customer with every dealership. Using the <@> distance operator, it calculates the spatial distance between each customer and dealership pair and stores the result in a new temporary table. Overall, the code prepares spatial data and computes distances to support location-based analysis, such as identifying the nearest dealership for each customer._
 
 ---
 
@@ -177,7 +192,12 @@ For example - dealership 1 is below:
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT
+    dealership_id,
+    ARRAY_AGG(last_name || ',' || first_name) AS salespeople
+FROM salespeople
+GROUP BY dealership_id
+ORDER BY dealership_id;
 ```
 
 ### Screenshot
@@ -202,7 +222,16 @@ Reference image:
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT
+    d.state,
+    s.dealership_id,
+    ARRAY_AGG(s.last_name || ',' || s.first_name) AS salespeople,
+    COUNT(*) AS salesperson_count
+FROM salespeople s
+JOIN dealerships d
+    ON s.dealership_id = d.dealership_id
+GROUP BY d.state, s.dealership_id
+ORDER BY d.state;
 ```
 
 ### Screenshot
@@ -218,7 +247,8 @@ Using the `sqlda` database, write the SQL needed to convert the **customers** ta
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT json_agg(row_to_json(customers))
+FROM customers;
 ```
 
 ### Screenshot
@@ -244,7 +274,19 @@ Reference image:
 ### SQL
 
 ```sql
--- Your SQL here
+SELECT json_agg(row_to_json(t))
+FROM (
+    SELECT
+        d.state,
+        s.dealership_id,
+        ARRAY_AGG(s.last_name || ',' || s.first_name) AS salespeople,
+        COUNT(*) AS salesperson_count
+    FROM salespeople s
+    JOIN dealerships d
+        ON s.dealership_id = d.dealership_id
+    GROUP BY d.state, s.dealership_id
+    ORDER BY d.state
+) t;
 ```
 
 ### Screenshot
