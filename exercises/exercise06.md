@@ -121,6 +121,6 @@ In 1-2 short paragraphs, explain:
 
 #### Design Notes
 
-_This model focuses on daily customer sales. The fact table, FACT_DAILY_SALES, stores one row per date, customer, and part, and includes only the required measures: quantity (units sold) and amount (total revenue). The grain is daily sales to support reporting by day, month, quarter, and year.
+This model focuses on daily customer sales. The fact table, FACT_DAILY_SALES, stores one row per date, customer, and part, and includes only the required measures: quantity (units sold) and amount (total revenue). The grain is daily sales to support reporting by day, month, quarter, and year.
 
-The model includes three dimensions: DIM_DATE, DIM_CUSTOMER, and DIM_PART. The date dimension supports time-based analysis, the customer dimension allows geographic reporting (city, state, zip), and the part dimension supports product and category analysis. Order details, sales rep data, and inventory information were excluded because they are not needed for the required analytics._
+The model includes three dimensions: DIM_DATE, DIM_CUSTOMER, and DIM_PART. The date dimension supports time-based analysis, the customer dimension allows geographic reporting (city, state, zip), and the part dimension supports product and category analysis. Order details, sales rep data, and inventory information were excluded because they are not needed for the required analytics.
