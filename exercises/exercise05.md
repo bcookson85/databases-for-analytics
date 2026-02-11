@@ -138,7 +138,7 @@ After looking at the data, **why is this the case?**
 
 ### Answer
 
-_Time zone differences or inconsistent timestamp recording, where the sent timestamp is standardized, while the opened timestamp reflects local time, making it appear that the email was opened before it was sent._
+Time zone differences or inconsistent timestamp recording, where the sent timestamp is standardized, while the opened timestamp reflects local time, making it appear that the email was opened before it was sent.
 
 ---
 
